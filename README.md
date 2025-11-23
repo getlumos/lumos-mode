@@ -357,26 +357,93 @@ You'll get syntax highlighting, auto-completion, and diagnostics automatically!
 
 ## Development
 
-### Running Tests
+### Testing
+
+We have three levels of testing to ensure production quality:
+
+#### 1. Unit Tests (14 tests)
+
+Test individual components (syntax highlighting, indentation, comments, etc.)
 
 ```bash
-# Install dependencies
-emacs --batch -l package --eval "(package-refresh-contents)"
+# Quick test
+make test
 
-# Run tests
+# Or manually
 emacs -batch -l lumos-mode.el -l lumos-mode-test.el -f ert-run-tests-batch-and-exit
 ```
 
-### Running Tests with Makefile
+**Coverage:**
+- Mode loading and derivation
+- File association (`.lumos` → `lumos-mode`)
+- Syntax highlighting (keywords, types, attributes, comments)
+- Indentation (structs, enums, nested blocks)
+- Comment functionality (line and block)
+- Custom variables
+
+#### 2. Integration Tests
+
+Test Emacs compatibility and package integration:
 
 ```bash
-make test
+./test-integration.sh
 ```
+
+**Tests:**
+- ✓ Emacs version compatibility (26.1+)
+- ✓ Unit test suite execution
+- ✓ Byte compilation
+- ✓ lumos-lsp server detection
+- ✓ Mode loading in Emacs
+- ✓ File association automation
+- ✓ Syntax highlighting rules
+- ✓ Indentation function
+- ✓ Custom variables
+- ✓ Package-lint validation
+
+#### 3. End-to-End Tests
+
+Test real user workflows:
+
+```bash
+./test-e2e.sh
+```
+
+**Simulates:**
+- User installation via straight.el
+- Opening `.lumos` files
+- Syntax highlighting in action
+- Indentation behavior
+- Comment insertion
+- Custom variable configuration
+- LSP integration (if `lumos-lsp` available)
+
+#### Run All Tests
+
+Before MELPA submission or major changes:
+
+```bash
+./test-all.sh
+```
+
+This runs all three test suites and reports overall status.
+
+### Continuous Integration
+
+GitHub Actions automatically runs all tests on every push:
+
+- **Emacs Versions:** 27.2, 28.2, 29.1, snapshot
+- **Checks:** Tests, byte compilation, package-lint
+- **Status:** See [Actions tab](https://github.com/getlumos/lumos-mode/actions)
 
 ### Byte Compilation
 
 ```bash
-emacs -batch -f batch-byte-compile lumos-mode.el
+# Compile to bytecode
+make compile
+
+# Clean compiled files
+make clean
 ```
 
 ## Contributing
